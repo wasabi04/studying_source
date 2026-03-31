@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+
+typedef struct Node { 
+	int data; 
+	struct Node* next;
+} Node;
+
+
+Node* create_node(int value) { 
+	Node* new_node = (Node*)malloc(sizeof(Node));
+	new_node->data = value; 
+	new_node->next = NULL; 
+	return new_node;	
+}
+
+
+
+void push_front(Node** head, int value) { 
+	Node* new_node = create_node(value); 
+	new_node->next = *head;
+	*head = new_node;
+
+}
+
+
+void push_back(Node** head, int value) {
+	Node* new_node = create_node(value);
+	if (*head == NULL) {
+		*head = new_node;
+		return;
+	}
+	Node* rep = *head;
+	while (rep->next != NULL) {
+		rep = rep->next;
+	}
+	rep->next = new_node; 
+}	
+
+
+
+
+void print_list(Node* head) {
+	Node* rep = head;
+	while (rep != NULL) {
+		printf("%d -> ", rep->data);
+		rep = rep->next;
+	}
+	printf("NULL\n");
+}
+
+
+
+
+void delete_node(Node** head, int value) {
+	if (*head == NULL) return;
+
+	if ((*head)->data == value) {
+		Node* temp = *head; 
+		*head = (*head)->next; 
+		free(temp); 
+		return;
+	}
+
+	Node* rep = *head;
+	while (rep->next != NULL && rep->next->data != value) {
+		rep = rep->next;
+	}
+	if (rep->next != NULL) {
+		Node* temp = rep->next; 
+		rep->next = temp->next; 
+		free(temp);
+	}
+}
+
+
+
+void free_list(Node* head) {
+	Node* rep = head;  
+	while (rep != NULL) {  
+		Node* temp = rep->next;  
+		free(rep); 
+		rep = temp;
+
+	}
+}
+
+int main() {
+	Node* head = NULL; 
+
+	push_back(&head, 10);
+	push_back(&head, 20);
+	push_back(&head, 30);
+	push_front(&head, 5);
+
+	print_list(head);      
+
+	delete_node(&head, 20);
+	print_list(head);      
+
+	free_list(head);   
+	return 0;
+}
